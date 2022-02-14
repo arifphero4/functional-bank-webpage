@@ -16,10 +16,16 @@ function updateTotalField(totalFieldId, amount) {
   totalElement.innerText = previousTotal + amount;
 }
 
-function updateBalance(amount, isAddition) {
+function getCurrentBalance() {
   const balanceTotal = document.getElementById("balance-total");
   const balanceTotalText = balanceTotal.innerText;
   const previousBalanceTotal = parseFloat(balanceTotalText);
+  return previousBalanceTotal;
+}
+
+function updateBalance(amount, isAddition) {
+  const balanceTotal = document.getElementById("balance-total");
+  const previousBalanceTotal = getCurrentBalance();
   if (isAddition == true) {
     balanceTotal.innerText = previousBalanceTotal + amount;
   } else {
@@ -32,10 +38,14 @@ document
   .getElementById("deposit-button")
   .addEventListener("click", function () {
     const depositAmount = getInputValue("deposit-input");
-    //get current deposit
-    updateTotalField("deposit-total", depositAmount);
-    // update balance
-    updateBalance(depositAmount, true);
+    if (depositAmount > 0) {
+      //get current deposit
+      updateTotalField("deposit-total", depositAmount);
+      // update balance
+      updateBalance(depositAmount, true);
+    } else {
+      alert("invalid input, please give a positive number");
+    }
   });
 
 //   handle withdraw button
@@ -43,8 +53,13 @@ document
   .getElementById("withdraw-button")
   .addEventListener("click", function () {
     const withdrawAmount = getInputValue("withdraw-input");
-    // update withdraw total
-    updateTotalField("withdraw-total", withdrawAmount);
-    // update balance
-    updateBalance(withdrawAmount);
+    const currentBalance = getCurrentBalance();
+    if (withdrawAmount > 0 && withdrawAmount < currentBalance) {
+      // update withdraw total
+      updateTotalField("withdraw-total", withdrawAmount);
+      // update balance
+      updateBalance(withdrawAmount);
+    } else {
+      alert("invalid input, please give a positive number");
+    }
   });
